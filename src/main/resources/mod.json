@@ -1,3 +1,13 @@
 {
-  "main":"com.mycompany.myproject.PingVerticle"
+  "main":"com.mycompany.myproject.PingVerticle",
+
+  // Mandatory fields
+  "description":"Put description of your module here",
+  "licenses": ["The Apache Software License Version 2.0"],
+  "author": "Tim Fox",
+
+  // Optional fields
+  "developers": ["Other Dev 1", "Other Dev 2"],
+  "keywords": ["gerbils", "cars", "cheese", "chocolate", "underpants"],
+  "homepage": "https://github.com/vert-x/vertx-gradle-template"
 }
