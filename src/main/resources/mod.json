@@ -1,13 +1,14 @@
 {
   "main":"com.mycompany.myproject.PingVerticle",
 
-  // Mandatory fields
+  // If your module is going to be registered in the Vert.x module registry you will also need the following
+  // mandatory fields
   "description":"Put description of your module here",
   "licenses": ["The Apache Software License Version 2.0"],
-  "author": "Tim Fox",
+  "author": "Joe Bloggs",
 
   // Optional fields
   "developers": ["Other Dev 1", "Other Dev 2"],
-  "keywords": ["gerbils", "cars", "cheese", "chocolate", "underpants"],
-  "homepage": "https://github.com/vert-x/vertx-gradle-template"
+  "keywords": ["gerbils", "cars", "cheese", "chocolate", "underpants", "herring"],
+  "homepage": "url to your project page"
 }
