@@ -42,7 +42,7 @@ VertxTests.initialize(this)
 // don't have to hardecode it in your tests
 container.deployModule(System.getProperty("vertx.modulename"), { asyncResult ->
   // Deployment is asynchronous and this this handler will be called when it's complete (or failed)
-  assertTrue(asyncResult.succeeded())
+  assertTrue(asyncResult.succeeded)
   assertNotNull("deploymentID should not be null", asyncResult.result())
   // If deployed correctly then start the tests!
   VertxTests.startTests(this)

@@ -178,7 +178,6 @@ task pullInDeps(dependsOn: copyMod, description: 'Pull in all the module depende
 
 def setSysProps() {
   System.setProperty("vertx.mods", "build/mods")
-  System.setProperty("vertx.loadWithPlatformCL", "false");
 }
 
 def loadProperties(String sourceFileName) {
