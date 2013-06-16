@@ -15,32 +15,24 @@
  *
  *
  */
-package com.mycompany.myproject;
 
+package com.mycompany.myproject
 
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.platform.Verticle;
+import org.vertx.groovy.platform.Verticle
 
 /*
- * This is a simple Java verticle which receives `ping` messages on the event bus and sends back `pong` replies
+ * This is a simple compiled Groovy verticle which receives `ping` messages on the event bus and sends back `pong`
+ * replies
  *
  * @author <a href="http://tfox.org">Tim Fox</a>
  */
-public class PingVerticle extends Verticle {
+class GroovyPingVerticle extends Verticle {
 
-  public void start() {
+  def start() {
 
-
-    vertx.eventBus().registerHandler("ping-address", new Handler<Message<String>>() {
-      @Override
-      public void handle(Message<String> message) {
-        message.reply("pong!");
-        container.logger().info("Sent back pong");
-      }
-    });
-
-    container.logger().info("PingVerticle started");
-
+    vertx.eventBus.registerHandler("ping-address") { message ->
+      message.reply("pong!")
+      container.logger.info("Sent back pong groovy!")
+    }
   }
 }
