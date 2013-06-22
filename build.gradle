@@ -80,7 +80,7 @@ def configurePom(def pom) {
     name rootProject.name
     description 'Description of your module here'
     inceptionYear '2013'
-    packaging 'zip'
+    packaging produceJar == 'false' ? 'pom' : 'jar'
     url 'Your project url'
 
     developers {
