@@ -60,6 +60,8 @@ dependencies {
   // If you're creating Groovy compiled verticles you may need the following dependencies
   provided "org.codehaus.groovy:groovy-all:$groovyVersion"
   provided "io.vertx:lang-groovy:$groovyLangModVersion@jar"
+  compile "io.vertx:lang-rhino:2.0.0-CR2:mod@zip"
+  // compile group:"io.vertx", name: "lang-rhino", version: "2.0.0-CR2", classifier: 'mod'
 
 }
 
@@ -80,7 +82,8 @@ def configurePom(def pom) {
     name rootProject.name
     description 'Description of your module here'
     inceptionYear '2013'
-    packaging produceJar == 'false' ? 'pom' : 'jar'
+    packaging 'jar'
+
     url 'Your project url'
 
     developers {
