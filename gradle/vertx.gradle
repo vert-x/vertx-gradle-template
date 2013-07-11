@@ -132,8 +132,6 @@ test {
 task runModIDEA(dependsOn: copyMod, description: 'Run the module from the resources in IntelliJ') << {
   def classpath = [ new URL('file:src/main/resources/'), new URL('file:src/test/resources/'),
       new URL("file:out/production/${project.name}/"), new URL("file:out/test/${project.name}/")] as URL[]
-
-  println "file:out/production/${project.name}"
   runModWithClasspath(classpath)
 }
 
