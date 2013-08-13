@@ -2,7 +2,8 @@
  * Simple integration test which shows tests deploying other verticles, using the Vert.x API etc
  */
 
-import com.mycompany.myproject.test.integration.java.SomeVerticle
+
+import com.mycompany.myproject.test.integration.groovy.GroovySomeVerticle
 
 import static org.vertx.testtools.VertxAssert.*
 
@@ -33,11 +34,12 @@ def testHTTP() {
 }
 
 /*
-  This test deploys some arbitrary verticle - note that the call to testComplete() is inside the Verticle `SomeVerticle`
+  This test deploys some arbitrary verticle - note that the call to testComplete() is inside the Verticle `GroovySomeVerticle`
+  GroovySomeVerticle is a test verticle written in Groovy
 */
 def testDeployArbitraryVerticle() {
   assertEquals("bar", "bar")
-  container.deployVerticle(SomeVerticle.class.getName())
+  container.deployVerticle("groovy:" + GroovySomeVerticle.class.getName())
 }
 
 def testCompleteOnTimer() {
