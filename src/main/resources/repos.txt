@@ -1,0 +1,15 @@
+# Note! You don't have to have repos.txt on your classpath but we've added this one as an example
+# for those cases where you want to override the default one that is inside the vertx-platform.jar
+# e.g. perhaps you have your own Maven repository you want to use
+
+# Local Maven repo on filesystem
+mavenLocal:~/.m2/repository
+
+# Maven central
+maven:http://repo2.maven.org/maven2
+
+# Sonatype snapshots
+maven:http://oss.sonatype.org/content/repositories/snapshots
+
+# Bintray
+bintray:http://dl.bintray.com

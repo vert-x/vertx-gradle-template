@@ -84,6 +84,7 @@ buildscript {
   dependencies {
     classpath "io.vertx:vertx-core:$vertxVersion"
     classpath "io.vertx:vertx-platform:$vertxVersion"
+    classpath files(['src/main/resources'])
   }
 }
 
