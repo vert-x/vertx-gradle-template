@@ -20,6 +20,7 @@ package com.mycompany.myproject;
 
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.logging.Logger;
 import org.vertx.java.platform.Verticle;
 
 /*
@@ -31,16 +32,19 @@ public class PingVerticle extends Verticle {
 
   public void start() {
 
+    final Logger logger = container.logger();
 
     vertx.eventBus().registerHandler("ping-address", new Handler<Message<String>>() {
       @Override
       public void handle(Message<String> message) {
         message.reply("pong!");
-        container.logger().info("Sent back pong");
+        logger.info("Sent back pong");
       }
     });
 
-    container.logger().info("PingVerticle started");
+    logger.info("PingVerticle started");
+
+    logger.info("Config value foo is " + container.config().getString("foo"));
 
   }
 }
