@@ -80,7 +80,7 @@ buildscript {
   dependencies {
     classpath "io.vertx:vertx-core:$vertxVersion"
     classpath "io.vertx:vertx-platform:$vertxVersion"
-    classpath "io.vertx:vertx-hazelcast:$vertxVersion"
+    // classpath "io.vertx:vertx-hazelcast:$vertxVersion"
     classpath files(['src/main/resources'])
   }
 }
