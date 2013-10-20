@@ -144,12 +144,12 @@ test {
 }
 
 task runModIDEA(dependsOn: copyMod, description: 'Run the module from the resources in IntelliJ') << {
-  runModWithClasspath("file:src/main/resources/${cpSeparator}file:src/test/resources/${cpSeparator}" +
-                      "file:out/production/${project.name}/${cpSeparator}file:out/test/${project.name}/");
+  runModWithClasspath("src/main/resources/${cpSeparator}src/test/resources/${cpSeparator}" +
+                      "out/production/${project.name}/${cpSeparator}out/test/${project.name}/");
 }
 
 task runModEclipse(dependsOn: copyMod, description: 'Run the module from the resources in Eclipse') << {
-  runModWithClasspath("file:src/main/resources/${cpSeparator}file:src/test/resources/${cpSeparator}file:bin/");
+  runModWithClasspath("src/main/resources/${cpSeparator}src/test/resources/${cpSeparator}bin/");
 }
 
 def runModWithClasspath(String classpath) {
