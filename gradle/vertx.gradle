@@ -81,7 +81,7 @@ buildscript {
     classpath "io.vertx:vertx-core:$vertxVersion"
     classpath "io.vertx:vertx-platform:$vertxVersion"
     classpath "io.vertx:vertx-hazelcast:$vertxVersion"
-    classpath files(['src/main/resources'])
+    classpath files(["$projectDir/src/main/resources"])
   }
 }
 
@@ -92,9 +92,9 @@ sourceSets {
 }
 
 task copyMod( type:Copy, dependsOn: 'classes', description: 'Assemble the module into the local mods directory' ) {
-  into "build/mods/$moduleName"
+  into "$buildDir/mods/$moduleName"
   from compileJava
-  from 'src/main/resources'
+  from "$projectDir/src/main/resources"
   into( 'lib' ) {
     from configurations.compile
   }
@@ -104,7 +104,7 @@ task modZip( type: Zip, dependsOn: 'pullInDeps', description: 'Package the modul
   group = 'vert.x'
   classifier = "mod"
   description = "Assembles a vert.x module"
-  destinationDir = project.file('build/libs')
+  destinationDir = project.file("$buildDir/libs")
   archiveName = "${modname}-${version}" + ".zip"
   from copyMod
 }
@@ -140,16 +140,16 @@ test {
 
   testLogging { exceptionFormat "full" }
 
-  systemProperty 'vertx.mods', "build/mods"
+  systemProperty 'vertx.mods', "$buildDir/mods"
 }
 
 task runModIDEA(dependsOn: copyMod, description: 'Run the module from the resources in IntelliJ') << {
-  runModWithClasspath("src/main/resources/${cpSeparator}src/test/resources/${cpSeparator}" +
-                      "out/production/${project.name}/${cpSeparator}out/test/${project.name}/");
+  runModWithClasspath("$projectDir/src/main/resources/${cpSeparator}$projectDir/src/test/resources/${cpSeparator}" +
+                      "$rootDir/out/production/${project.name}/${cpSeparator}$rootDir/out/test/${project.name}/");
 }
 
 task runModEclipse(dependsOn: copyMod, description: 'Run the module from the resources in Eclipse') << {
-  runModWithClasspath("src/main/resources/${cpSeparator}src/test/resources/${cpSeparator}bin/");
+  runModWithClasspath("$projectDir/src/main/resources/${cpSeparator}$projectDir/src/test/resources/${cpSeparator}bin/");
 }
 
 def runModWithClasspath(String classpath) {
@@ -191,14 +191,14 @@ task pullInDeps(dependsOn: copyMod, description: 'Pull in all the module depende
 task fatJar(dependsOn: modZip, description: 'Creates a fat executable jar which contains everything needed to run the module') << {
   if (createFatJar == 'true') {
     setSysProps()
-    def args = ['fatjar', moduleName, '-d', 'build/libs']
+    def args = ['fatjar', moduleName, '-d', "$buildDir/libs"]
     Starter.main(args as String[])
   }
 }
 
 def setSysProps() {
   System.setProperty("vertx.clusterManagerFactory", "org.vertx.java.spi.cluster.impl.hazelcast.HazelcastClusterManagerFactory")
-  System.setProperty("vertx.mods", "build/mods")
+  System.setProperty("vertx.mods", "$buildDir/mods")
 }
 
 def loadProperties(String sourceFileName) {
