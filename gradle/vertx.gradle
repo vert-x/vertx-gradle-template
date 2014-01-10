@@ -143,8 +143,23 @@ test {
   systemProperty 'vertx.mods', "build/mods"
 }
 
+task init(description: 'Create module link and CP file') << {
+  setSysProps()
+  doInit()
+}
+
 task runMod(description: 'Run the module') << {
   setSysProps()
+  // We also init here - this means for single module builds the user doesn't have to explicitly init -
+  // they can just do runMod
+  doInit()
+  args = ['runmod', moduleName]
+  def args2 = runModArgs.split("\\s+")
+  args.addAll(args2)
+  Starter.main(args as String[])
+}
+
+def doInit() {
   File cpFile = new File("vertx_classpath.txt")
   if (!cpFile.exists()) {
     cpFile.createNewFile();
@@ -155,12 +170,7 @@ task runMod(description: 'Run the module') << {
       "out/test/${project.name}";
     cpFile << defaultCp;
   }
-
   def args = ['create-module-link', moduleName]
-  Starter.main(args as String[])
-  args = ['runmod', moduleName]
-  def args2 = runModArgs.split("\\s+")
-  args.addAll(args2)
   Starter.main(args as String[])
 }
 
