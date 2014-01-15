@@ -81,7 +81,17 @@ buildscript {
     classpath "io.vertx:vertx-core:$vertxVersion"
     classpath "io.vertx:vertx-platform:$vertxVersion"
     classpath "io.vertx:vertx-hazelcast:$vertxVersion"
-    classpath files(['src/main/resources'])
+
+    // Extra classpath for Vert.x
+
+    // Users can be Vert.x platform classpath files (e.g. langs.properties) in either src/main/platform_lib
+    // or src/main/resources/platform_lib (if they want it in the module for fatjars)
+    classpath files(['src/main/platform-lib'])
+    classpath files(['src/main/platform-lib/*.jar'])
+    classpath files(['src/main/platform-lib/*.zip'])
+    classpath files(['src/main/resources/platform-lib'])
+    classpath files(['src/main/resources/platform-lib/*.jar'])
+    classpath files(['src/main/resources/platform-lib/*.zip'])
   }
 }
 
