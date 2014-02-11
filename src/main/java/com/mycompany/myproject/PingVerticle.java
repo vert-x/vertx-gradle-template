@@ -41,7 +41,7 @@ public class PingVerticle extends Verticle {
 
     JsonObject conf = new JsonObject().putString("web_root", "webroot").putNumber("port", 8080);
 
-    container.deployModule("io.vertx~mod-web-server~2.1.0-SNAPSHOT", conf);
+    container.deployModule("io.vertx~mod-web-server~2.0.0-final", conf);
 
   }
 }
