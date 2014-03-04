@@ -42,6 +42,7 @@ project.ext.moduleName = "$modowner~$modname~$version"
 
 configurations {
   provided
+  compile.extendsFrom provided
   testCompile.extendsFrom provided
 }
 
