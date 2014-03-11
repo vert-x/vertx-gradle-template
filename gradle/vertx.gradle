@@ -42,6 +42,7 @@ project.ext.moduleName = "$modowner~$modname~$version"
 
 configurations {
   provided
+  compile.extendsFrom provided
   testCompile.extendsFrom provided
 }
 
@@ -121,6 +122,10 @@ task sourceJar(type: Jar) {
   description = 'Builds a source jar artifact suitable for maven deployment.'
   classifier = 'sources'
   from sourceSets.main.java
+}
+
+javadoc {
+    classpath = configurations.compile + configurations.provided
 }
 
 task javadocJar(type: Jar) {
