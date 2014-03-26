@@ -168,7 +168,7 @@ task collectDeps(type: Copy) {
   }
 }
 
-task runMod(description: 'Run the module', dependsOn: collectDeps) << {
+task runMod(description: 'Run the module', dependsOn: [collectDeps, copyMod]) << {
   setSysProps()
   // We also init here - this means for single module builds the user doesn't have to explicitly init -
   // they can just do runMod
