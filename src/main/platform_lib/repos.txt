@@ -1,4 +1,4 @@
-# Note! You don't have to have repos.txt on your classpath but we've added this one as an example
+# Note! You don't have to override repos.txt but we've added this one as an example
 # for those cases where you want to override the default one that is inside the vertx-platform.jar
 # e.g. perhaps you have your own Maven repository you want to use
 
