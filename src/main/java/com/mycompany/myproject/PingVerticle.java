@@ -23,6 +23,9 @@ import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.logging.Logger;
 import org.vertx.java.platform.Verticle;
 
+import java.util.Enumeration;
+import java.util.Properties;
+
 /*
  * This is a simple Java verticle which receives `ping` messages on the event bus and sends back `pong` replies
  *
@@ -44,6 +47,16 @@ public class PingVerticle extends Verticle {
 
 
     logger.info("PingVerticle started");
+      Properties p = System.getProperties();
+      Enumeration keys = p.keys();
+      while (keys.hasMoreElements()) {
+          String key = (String)keys.nextElement();
+          String value = (String)p.get(key);
+          System.out.println("key: " + key + " value: " + value);
+      }
+
+      logger.info("testing 1 2 3");
+
 
   }
 }

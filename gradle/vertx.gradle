@@ -1,5 +1,6 @@
 import org.vertx.java.platform.impl.cli.Starter
 
+
 /*
  * Copyright 2012 the original author or authors.
  *
@@ -19,7 +20,7 @@ import org.vertx.java.platform.impl.cli.Starter
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'idea'
-apply plugin: 'eclipse'
+//apply plugin: 'eclipse'
 
 def cpSeparator = System.getProperty("path.separator")
 
@@ -78,6 +79,7 @@ buildscript {
   }
 
   dependencies {
+    classpath "ch.qos.logback:logback-classic:$logbackVersion"
     classpath "io.vertx:vertx-core:$vertxVersion"
     classpath "io.vertx:vertx-platform:$vertxVersion"
     classpath "io.vertx:vertx-hazelcast:$vertxVersion"
@@ -144,6 +146,8 @@ artifacts {
 test {
   dependsOn copyMod
 
+//  useTestNG()
+
   // Make sure tests are always run!
   outputs.upToDateWhen { false }
 
@@ -173,6 +177,7 @@ task runMod(description: 'Run the module', dependsOn: collectDeps) << {
   // they can just do runMod
   doInit()
   args = ['runmod', moduleName]
+
   def args2 = runModArgs.split("\\s+")
   args.addAll(args2)
   Starter.main(args as String[])
@@ -211,12 +216,15 @@ task fatJar(dependsOn: modZip, description: 'Creates a fat executable jar which 
 }
 
 def setSysProps() {
-  System.setProperty("vertx.clusterManagerFactory", "org.vertx.java.spi.cluster.impl.hazelcast.HazelcastClusterManagerFactory")
-  String modsDir = System.getenv("VERTX_MODS")
+//    System.setProperty("-cp", "./build/deps/slf4j-api-1.7.6.jar")
+    System.setProperty("vertx.clusterManagerFactory", "org.vertx.java.spi.cluster.impl.hazelcast.HazelcastClusterManagerFactory")
+    System.setProperty("org.vertx.logger-delegate-factory-class-name", "org.vertx.java.core.logging.impl.SLF4JLogDelegateFactory")
+    System.setProperty('logback.configurationFile', '/logback.xml')
+    String modsDir = System.getenv("VERTX_MODS")
   if (modsDir == null) {
     modsDir = "build/mods";
   }
-  System.setProperty("vertx.mods", modsDir)
+    System.setProperty("vertx.mods", modsDir)
 }
 
 def loadProperties(String sourceFileName) {

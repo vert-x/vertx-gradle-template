@@ -1,12 +1,10 @@
 # Vert.x Gradle Template
 
-Template project for creating a Vert.x module with a Gradle build.
+## running a fatJar
 
-Clone this and adapt it to easily develop Vert.x modules using Gradle as your build tool.
+```
 
-By default this module contains a simple Java verticle which listens on the event bus and responds to `ping!`
-messages with `pong!`.
+java -Dorg.vertx.logger-delegate-factory-class-name=org.vertx.java.core.logging.impl.SLF4JLogDelegateFactory -jar build/libs/my-module-1.0.0-final-fat.jar  -cp ./build/deps/slf4j-api-1.7.7.jar:./build/deps/slf4j-simple-1.7.7.jar:./src/main/resources/logback.xml
 
-This template also shows you how to write tests in Java, Groovy, Ruby and Python
+```
 
-See the [build script](build.gradle) for the list of useful tasks
