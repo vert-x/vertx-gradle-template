@@ -157,6 +157,7 @@ test {
   testLogging { exceptionFormat "full" }
 
   systemProperty 'vertx.mods', "build/mods"
+  systemProperty 'org.vertx.logger-delegate-factory-class-name', "org.vertx.java.core.logging.impl.SLF4JLogDelegateFactory"
 }
 
 task init(description: 'Create module link and CP file') << {
@@ -175,6 +176,7 @@ task runMod(description: 'Run the module', dependsOn: collectDeps) << {
   setSysProps()
   // We also init here - this means for single module builds the user doesn't have to explicitly init -
   // they can just do runMod
+
   doInit()
   args = ['runmod', moduleName]
 
@@ -195,6 +197,7 @@ def doInit() {
       "build/deps\r\n";
     cpFile << defaultCp;
   }
+//  systemProperty 'org.vertx.logger-delegate-factory-class-name', "org.vertx.java.core.logging.impl.SLF4JLogDelegateFactory"
   def args = ['create-module-link', moduleName]
   Starter.main(args as String[])
 }

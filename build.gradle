@@ -67,6 +67,10 @@ test {
 
 }
 
+//run {
+//    systemProperty 'org.vertx.logger-delegate-factory-class-name', "org.vertx.java.core.logging.impl.SLF4JLogDelegateFactory"
+//}
+
 /*
 If you're uploading stuff to Maven, Gradle needs to generate a POM.
 Please edit the details below.
