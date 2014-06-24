@@ -3,7 +3,7 @@
  */
 
 
-import com.mycompany.myproject.test.integration.groovy.GroovySomeVerticle
+import com.deblox.myproject.test.integration.groovy.GroovySomeVerticle
 
 import static org.vertx.testtools.VertxAssert.*
 

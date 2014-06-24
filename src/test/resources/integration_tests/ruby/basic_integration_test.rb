@@ -27,7 +27,7 @@ end
 
 # This test deploys some arbitrary verticle - note that the call to testComplete() is inside the Verticle `SomeVerticle`
 def test_deploy_arbitrary_verticle
-  Vertx.deploy_verticle('com.mycompany.myproject.test.integration.java.SomeVerticle')
+  Vertx.deploy_verticle('com.deblox.myproject.test.integration.java.SomeVerticle')
 end
 
 # This demonstrates how tests are asynchronous - the timer does not fire until 1 second later -

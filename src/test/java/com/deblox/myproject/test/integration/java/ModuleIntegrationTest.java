@@ -1,4 +1,4 @@
-package com.mycompany.myproject.test.integration.java;/*
+package com.deblox.myproject.test.integration.java;/*
  * Copyright 2013 Red Hat, Inc.
  *
  * Red Hat licenses this file to you under the Apache License, version 2.0
@@ -21,10 +21,7 @@ import org.vertx.java.core.AsyncResult;
 import org.vertx.java.core.AsyncResultHandler;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.http.HttpClientResponse;
-import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.testtools.TestVerticle;
-import org.vertx.testtools.VertxAssert;
 
 import static org.vertx.testtools.VertxAssert.*;
 

@@ -15,7 +15,7 @@
  *
  *
  */
-package com.mycompany.myproject;
+package com.deblox.myproject;
 
 
 import org.vertx.java.core.Handler;

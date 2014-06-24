@@ -1,3 +1,10 @@
+package com.deblox.myproject.test.unit;
+
+import com.deblox.myproject.PingVerticle;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /*
  * Copyright 2013 Red Hat, Inc.
  *
@@ -13,26 +20,16 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  *
- *
- */
-
-package com.mycompany.myproject
-
-import org.vertx.groovy.platform.Verticle
-
-/*
- * This is a simple compiled Groovy verticle which receives `ping` messages on the event bus and sends back `pong`
- * replies
- *
  * @author <a href="http://tfox.org">Tim Fox</a>
  */
-class GroovyPingVerticle extends Verticle {
+public class ExampleUnitTest {
 
-  def start() {
+  @Test
+  public void testVerticle() {
+    PingVerticle vert = new PingVerticle();
 
-    vertx.eventBus.registerHandler("ping-address") { message ->
-      message.reply("pong!")
-      container.logger.info("Sent back pong groovy!")
-    }
+    // Interrogate your classes directly....
+
+    assertNotNull(vert);
   }
 }
