@@ -167,12 +167,12 @@ task collectDeps(type: Copy) {
   }
 }
 
-task runMod(description: 'Run the module', dependsOn: collectDeps) << {
+task runMod(description: 'Run the module', dependsOn: [collectDeps, classes]) << {
   setSysProps()
   // We also init here - this means for single module builds the user doesn't have to explicitly init -
   // they can just do runMod
   doInit()
-  args = ['runmod', moduleName]
+  def args = ['runmod', moduleName]
   def args2 = runModArgs.split("\\s+")
   args.addAll(args2)
   Starter.main(args as String[])
@@ -187,7 +187,9 @@ def doInit() {
       "bin\r\n" +
       "out/production/${project.name}\r\n" +
       "out/test/${project.name}\r\n" +
-      "build/deps\r\n";
+      "build/deps\r\n" +
+      "build/classes/main\r\n" +
+      "build/resources/main\r\n";
     cpFile << defaultCp;
   }
   def args = ['create-module-link', moduleName]
