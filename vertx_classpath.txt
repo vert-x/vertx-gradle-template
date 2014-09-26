@@ -1,0 +1,5 @@
+src/main/resources
+bin
+out/production/vertx-gradle-template
+out/test/vertx-gradle-template
+build/deps

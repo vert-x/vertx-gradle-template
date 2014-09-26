@@ -18,6 +18,7 @@ import org.vertx.java.platform.impl.cli.Starter
 
 apply plugin: 'java'
 apply plugin: 'groovy'
+apply plugin: 'scala'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
