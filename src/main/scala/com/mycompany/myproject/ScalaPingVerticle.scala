@@ -13,9 +13,9 @@ class ScalaPingVerticle extends Verticle{
 	override def start(){
 		val log = container.logger
 		vertx.eventBus.registerHandler("ping-address", {message:Message[String] =>
-      		message.reply("pong!")
-      		log info "Sent back pong scala!"
-      	})
-    
+	  		message.reply("pong!")
+	  		log info "Sent back pong scala!"
+	  })
+
 	}
 }
