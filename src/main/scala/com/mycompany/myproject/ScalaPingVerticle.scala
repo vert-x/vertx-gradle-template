@@ -10,12 +10,11 @@ import org.vertx.scala.core.eventbus.Message
  */
 
 class ScalaPingVerticle extends Verticle{
-	override def start(){
-		val log = container.logger
-		vertx.eventBus.registerHandler("ping-address", {message:Message[String] =>
-	  		message.reply("pong!")
-	  		log info "Sent back pong scala!"
-	  })
-
-	}
+  override def start(){
+    val log = container.logger
+    vertx.eventBus.registerHandler("ping-address", {message:Message[String] =>
+	    message.reply("pong!")
+	    log info "Sent back pong scala!"
+    })
+  }
 }
