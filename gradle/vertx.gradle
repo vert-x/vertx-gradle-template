@@ -1,4 +1,5 @@
 import org.vertx.java.platform.impl.cli.Starter
+import java.lang.reflect.Method
 
 /*
  * Copyright 2012 the original author or authors.
@@ -59,6 +60,7 @@ repositories {
 dependencies {
   provided "io.vertx:vertx-core:$vertxVersion"
   provided "io.vertx:vertx-platform:$vertxVersion"
+  provided "io.vertx:vertx-hazelcast:$vertxVersion"
   testCompile "junit:junit:$junitVersion"
   testCompile "io.vertx:testtools:$toolsVersion"
 }
@@ -95,7 +97,7 @@ buildscript {
 
 sourceSets {
   main {
-    compileClasspath = compileClasspath + configurations.provided
+	 compileClasspath += [configurations.provided]
   }
 }
 
@@ -172,7 +174,7 @@ task runMod(description: 'Run the module', dependsOn: collectDeps) << {
   // We also init here - this means for single module builds the user doesn't have to explicitly init -
   // they can just do runMod
   doInit()
-  args = ['runmod', moduleName]
+  def args = ['runmod', moduleName]
   def args2 = runModArgs.split("\\s+")
   args.addAll(args2)
   Starter.main(args as String[])
@@ -206,8 +208,20 @@ task fatJar(dependsOn: modZip, description: 'Creates a fat executable jar which 
   if (createFatJar == 'true') {
     setSysProps()
     def args = ['fatjar', moduleName, '-d', 'build/libs']
-    Starter.main(args as String[])
+	configurations.provided.resolve().each {
+	  addURL(it.toURL());
+	}
+	Starter.main(args as String[])
   }
+}
+
+def addURL(URL url) {
+	URLClassLoader classLoader = (URLClassLoader) getClass().getClassLoader()
+	Class clazz = URLClassLoader.class;
+
+	Method method = clazz.getDeclaredMethod("addURL", [URL.class] as Class[]);
+	method.setAccessible(true);
+	method.invoke(classLoader, [url] as Object[]);
 }
 
 def setSysProps() {
@@ -234,10 +248,10 @@ def loadProperties(String sourceFileName) {
 plugins.withType(IdeaPlugin) {
   idea {
     module {
-      scopes.PROVIDED.plus += configurations.provided
-      scopes.COMPILE.minus += configurations.provided
-      scopes.TEST.minus += configurations.provided
-      scopes.RUNTIME.minus += configurations.provided
+	   scopes.PROVIDED.plus += [configurations.provided]
+	   scopes.COMPILE.minus += [configurations.provided]
+	   scopes.TEST.minus += [configurations.provided]
+	   scopes.RUNTIME.minus += [configurations.provided]
     }
   }
 }
