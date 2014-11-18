@@ -12,8 +12,14 @@
   // Compiled Groovy verticle - note that they must be prefixed with 'groovy:' to distinguish them from compiled Java verticles
   //"main":"groovy:com.mycompany.myproject.GroovyPingVerticle",
 
+  // Compiled Scala verticle - note that they must be prefixed with 'scala:' to distinguish them from compiled Java verticles
+  //"main":"scala:com.mycompany.myproject.ScalaPingVerticle",
+
   // Groovy *script* verticle
   //"main": "GroovyVerticle.groovy",
+
+  // Scala *script* verticle (this doesn't seem to work on new versions of the lang-scala module)
+  //"main": "ScalaVerticle.scala",
 
   // Ruby verticle
   //"main":"ping_verticle.rb",
@@ -24,6 +30,15 @@
   // Python verticle
   //"main": "ping_verticle.py",
 
+
+  //If youre using the new version of scala with scala 2.11 or 2.10
+  //"lang-impl":"io.vertx~lang-scala_2.11~1.0.1-RC3:org.vertx.scala.platform.impl.ScalaVerticleFactory",
+  //"lang-impl":"io.vertx~lang-scala_2.10~1.0.1-RC3:org.vertx.scala.platform.impl.ScalaVerticleFactory",
+
+  //Remember for FAT Jars to add thedependencies so the engine doesn't have to re-download them everytime
+  //"deploys": "io.vertx~lang-scala_2.11~1.0.1-RC3",
+  //"deploys": "io.vertx~lang-groovy~2.0.0-final",
+  
 
   // If your module is going to be registered in the Vert.x module registry you will also need the following
   // mandatory fields

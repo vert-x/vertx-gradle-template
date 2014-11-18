@@ -55,6 +55,10 @@ dependencies {
   provided "org.codehaus.groovy:groovy-all:$groovyVersion"
   provided "io.vertx:lang-groovy:$groovyLangModVersion@jar"
 
+  // If you're creating Scala compiled verticles you may need the following dependencies
+  provided "org.scala-lang:scala-library:$scalaVersion"
+  provided "org.scala-lang:scala-compiler:$scalaVersion"
+  provided "io.vertx:$scalaLangModVersion"
 }
 
 test {
