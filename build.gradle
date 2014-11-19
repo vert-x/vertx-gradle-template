@@ -55,6 +55,17 @@ dependencies {
   provided "org.codehaus.groovy:groovy-all:$groovyVersion"
   provided "io.vertx:lang-groovy:$groovyLangModVersion@jar"
 
+  // If you're creating Scala compiled verticles you may need the following dependencies
+  provided "org.scala-lang:scala-library:$scalaVersion"
+  provided "io.vertx:lang-scala:$scalaLangModVersion@jar"
+
+  // If you're creating Jython compiled verticles you may need the following dependencies
+  provided "org.python:jython-standalone:$jythonVersion"
+  provided "io.vertx:lang-jython:$jythonLangModVersion@jar"
+
+  // If you're creating Jruby compiled verticles you may need the following dependencies
+  provided "org.jruby:jruby-complete:$jrubyVersion"
+  provided "io.vertx:lang-jruby:$jrubyLangModVersion@jar"
 }
 
 test {
