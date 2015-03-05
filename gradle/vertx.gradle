@@ -18,6 +18,7 @@ import org.vertx.java.platform.impl.cli.Starter
 
 apply plugin: 'java'
 apply plugin: 'groovy'
+apply plugin: 'scala'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
@@ -59,6 +60,7 @@ repositories {
 dependencies {
   provided "io.vertx:vertx-core:$vertxVersion"
   provided "io.vertx:vertx-platform:$vertxVersion"
+  provided "io.vertx:vertx-hazelcast:$vertxVersion"
   testCompile "junit:junit:$junitVersion"
   testCompile "io.vertx:testtools:$toolsVersion"
 }
@@ -101,7 +103,9 @@ sourceSets {
 
 task copyMod( type:Copy, dependsOn: 'classes', description: 'Assemble the module into the local mods directory' ) {
   into "build/mods/$moduleName"
+  from compileGroovy
   from compileJava
+  from compileScala
   from 'src/main/resources'
   into( 'lib' ) {
     from configurations.compile
@@ -124,7 +128,7 @@ task sourceJar(type: Jar) {
 }
 
 javadoc {
-    classpath = configurations.compile + configurations.provided
+  classpath = configurations.compile + configurations.provided
 }
 
 task javadocJar(type: Jar) {
@@ -167,12 +171,8 @@ task collectDeps(type: Copy) {
   }
 }
 
-task runMod(description: 'Run the module', dependsOn: collectDeps) << {
-  setSysProps()
-  // We also init here - this means for single module builds the user doesn't have to explicitly init -
-  // they can just do runMod
-  doInit()
-  args = ['runmod', moduleName]
+task runMod(description: 'Run the module', dependsOn: [collectDeps, classes, init]) << {
+  def args = ['runmod', moduleName]
   def args2 = runModArgs.split("\\s+")
   args.addAll(args2)
   Starter.main(args as String[])
@@ -187,7 +187,10 @@ def doInit() {
       "bin\r\n" +
       "out/production/${project.name}\r\n" +
       "out/test/${project.name}\r\n" +
-      "build/deps\r\n";
+      "build/deps\r\n" +
+      "build/classes/main\r\n" +
+      "build/resources/main\r\n";
+
     cpFile << defaultCp;
   }
   def args = ['create-module-link', moduleName]
@@ -234,10 +237,10 @@ def loadProperties(String sourceFileName) {
 plugins.withType(IdeaPlugin) {
   idea {
     module {
-      scopes.PROVIDED.plus += configurations.provided
-      scopes.COMPILE.minus += configurations.provided
-      scopes.TEST.minus += configurations.provided
-      scopes.RUNTIME.minus += configurations.provided
+      scopes.PROVIDED.plus += [configurations.provided]
+      scopes.COMPILE.minus += [configurations.provided]
+      scopes.TEST.minus += [configurations.provided]
+      scopes.RUNTIME.minus += [configurations.provided]
     }
   }
 }
