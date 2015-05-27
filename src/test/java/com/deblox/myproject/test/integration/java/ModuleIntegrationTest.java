@@ -71,6 +71,7 @@ public class ModuleIntegrationTest extends TestVerticle {
     // test configuration
     JsonObject config = new JsonObject().putArray("services", new JsonArray()
             .add("com.deblox.myproject.PingVerticle"));
+    config.putObject("com.deblox.myproject.PingVerticle", new JsonObject().putString("foo", "bar"));
 
 
     // Deploy the module - the System property `vertx.modulename` will contain the name of the module so you
