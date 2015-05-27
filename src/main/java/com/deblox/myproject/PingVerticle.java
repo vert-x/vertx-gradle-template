@@ -18,42 +18,31 @@
 package com.deblox.myproject;
 
 
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.logging.Logger;
-import org.vertx.java.platform.Verticle;
+import io.vertx.core.*;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.impl.LoggerFactory;
 
 /*
  * This is a simple Java verticle which receives `ping` messages on the event bus and sends back `pong` replies
  *
  * @author <a href="http://tfox.org">Tim Fox</a>
  */
-public class PingVerticle extends Verticle {
+public class PingVerticle extends AbstractVerticle {
+
+  private static final Logger logger = LoggerFactory.getLogger(PingVerticle.class);
 
   public void start() {
 
-    final Logger logger = container.logger();
-
-    vertx.eventBus().registerHandler("ping-address", new Handler<Message<String>>() {
-      @Override
-      public void handle(Message<String> message) {
-        message.reply("pong!");
-        logger.info("Sent back pong");
-      }
+    vertx.eventBus().consumer("ping-address", message -> {
+      logger.info("Sent back pong");
+      message.reply("pong!");
     });
 
 
     logger.info("PingVerticle started");
-//      Properties p = System.getProperties();
-//      Enumeration keys = p.keys();
-//      while (keys.hasMoreElements()) {
-//          String key = (String)keys.nextElement();
-//          String value = (String)p.get(key);
-//          System.out.println("key: " + key + " value: " + value);
-//      }
-
-      logger.info("testing 1 2 3");
-
 
   }
 }

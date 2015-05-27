@@ -1,90 +1,93 @@
 package com.deblox.myproject.test.integration.java;/*
- * Copyright 2013 Red Hat, Inc.
- *
- * Red Hat licenses this file to you under the Apache License, version 2.0
- * (the "License"); you may not use this file except in compliance with the
- * License.  You may obtain a copy of the License at:
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
- * License for the specific language governing permissions and limitations
- * under the License.
+
+import io.vertx.codetrans.annotations.CodeTranslate;
+import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpServer;
+import io.vertx.ext.unit.Async;
+import io.vertx.ext.unit.TestOptions;
+import io.vertx.ext.unit.TestSuite;
+import io.vertx.ext.unit.report.ReportOptions;
+
+/*
+ * Example of asynchronous unit test written in raw vertx-unit style
  *
  * @author <a href="http://tfox.org">Tim Fox</a>
  */
 
-import org.junit.Test;
-import org.vertx.java.core.AsyncResult;
-import org.vertx.java.core.AsyncResultHandler;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.http.HttpClientResponse;
-import org.vertx.java.core.http.HttpServer;
-import org.vertx.java.core.http.HttpServerRequest;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Vertx;
 
-import static org.vertx.testtools.VertxAssert.*;
+public class BasicIntegrationTest {
 
-/**
- * Simple integration test which shows tests deploying other verticles, using the Vert.x API etc
- */
-public class BasicIntegrationTest extends TestVerticle {
 
-  @Test
-  /*
-  This demonstrates using the Vert.x API from within a test.
-   */
-  public void testHTTP() {
-    // Create an HTTP server which just sends back OK response immediately
-    vertx.createHttpServer().requestHandler(new Handler<HttpServerRequest>() {
-      public void handle(HttpServerRequest req) {
-        req.response().end();
-      }
-    }).listen(8181, new AsyncResultHandler<HttpServer>() {
-      @Override
-      public void handle(AsyncResult<HttpServer> asyncResult) {
-        assertTrue(asyncResult.succeeded());
-        // The server is listening so send an HTTP request
-        vertx.createHttpClient().setPort(8181).getNow("/",new Handler<HttpClientResponse>() {
-          @Override
-          public void handle(HttpClientResponse resp) {
-            assertEquals(200, resp.statusCode());
-            /*
-            If we get here, the test is complete
-            You must always call `testComplete()` at the end. Remember that testing is *asynchronous* so
-            we cannot assume the test is complete by the time the test method has finished executing like
-            in standard synchronous tests
-            */
-            testComplete();
-          }
-        });
-      }
-    });
+  public static void main(String[] args) {
+    new VertxUnitTest().run();
   }
 
-  @Test
-  /*
-  This test deploys some arbitrary verticle - note that the call to testComplete() is inside the Verticle `SomeVerticle`
-   */
-  public void testDeployArbitraryVerticle() {
-    assertEquals("bar", "bar");
-    container.deployVerticle(SomeVerticle.class.getName());
-  }
+  Vertx vertx;
 
-  @Test
-  public void testCompleteOnTimer() {
-    vertx.setTimer(1000, new Handler<Long>() {
-      @Override
-      public void handle(Long timerID) {
-        assertNotNull(timerID);
+  @CodeTranslate // Not yet detected
+  public void run() {
 
-        // This demonstrates how tests are asynchronous - the timer does not fire until 1 second later -
-        // which is almost certainly after the test method has completed.
-        testComplete();
-      }
+    TestOptions options = new TestOptions().addReporter(new ReportOptions().setTo("console"));
+    TestSuite suite = TestSuite.create("io.vertx.example.unit.test.VertxUnitTest");
+
+    suite.before(context -> {
+      vertx = Vertx.vertx();
+      Async async = context.async();
+      HttpServer server =
+              vertx.createHttpServer().requestHandler(req -> req.response().end("foo")).listen(8080, res -> {
+                if (res.succeeded()) {
+                  async.complete();
+                } else {
+                  context.fail();
+                }
+              });
     });
+
+    suite.after(context -> {
+      Async async = context.async();
+      vertx.close(ar -> {
+        if (ar.succeeded()) {
+          async.complete();
+        } else if (ar.failed()) {
+          context.fail();
+        }
+      });
+    });
+
+    // Specifying the test names seems ugly...
+    suite.test("some_test1", context -> {
+      // Send a request and get a response
+      HttpClient client = vertx.createHttpClient();
+      Async async = context.async();
+      client.getNow(8080, "localhost", "/", resp -> {
+        resp.bodyHandler(body -> context.assertEquals("foo", body.toString("UTF-8")));
+        client.close();
+        async.complete();
+      });
+    });
+    suite.test("some_test2", context -> {
+      // Deploy and undeploy a verticle
+      Async async = context.async();
+      vertx.deployVerticle("io.vertx.example.unit.SomeVerticle", res -> {
+        if (res.succeeded()) {
+          String deploymentID = res.result();
+          vertx.undeploy(deploymentID, res2 -> {
+            if (res2.succeeded()) {
+              async.complete();
+            } else {
+              context.fail();
+            }
+          });
+        } else {
+          context.fail();
+        }
+      });
+    });
+
+    suite.run(options);
+
   }
 
 
