@@ -1,14 +1,23 @@
 # Vert.x Gradle Template
 
-## build fatJar with logback libs embedded
+Modified to support logback
 
-./gradlew dist
+## Build
 
-## running
+To build a fatJar with logback libs
 
 ```
 
-java -Dorg.vertx.logger-delegate-factory-class-name=org.vertx.java.core.logging.impl.SLF4JLogDelegateFactory -jar build/libs/my-module-1.0.0-final-fat.jar -cp /somepath/logback.xml
+./gradlew dist
+
+```
+
+## running
+
+
+```
+
+java -Dorg.vertx.logger-delegate-factory-class-name=org.vertx.java.core.logging.impl.SLF4JLogDelegateFactory -jar build/libs/my-module-1.0.0-final-fat.jar -cp /dir/with/logback/xml
 
 ```
 
