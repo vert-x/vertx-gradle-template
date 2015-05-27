@@ -1,7 +1,7 @@
 {
 
   // Java verticle
-  "main":"com.deblox.myproject.PingVerticle",
+  "main":"com.deblox.Boot",
 
   // If your module is going to be registered in the Vert.x module registry you will also need the following
   // mandatory fields

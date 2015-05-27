@@ -1,5 +1,8 @@
 // Example JSON config file
 
 {
-  "foo": "bar"
+  "services": ["com.deblox.PingVerticle"],
+  "com.deblox.PingVerticle": {
+    "config_item": "something"
+  }
 }

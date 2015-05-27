@@ -1,6 +1,6 @@
 # Vert.x Gradle Template
 
-Modified to support logback
+Modified to support logback, see gradle/vertx.gradle for tasks.
 
 ## Build
 
@@ -12,7 +12,7 @@ To build a fatJar with logback libs
 
 ```
 
-## running
+## Running
 
 
 ```

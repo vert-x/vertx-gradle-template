@@ -21,6 +21,8 @@ import org.vertx.java.core.AsyncResult;
 import org.vertx.java.core.AsyncResultHandler;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonArray;
+import org.vertx.java.core.json.JsonObject;
 import org.vertx.testtools.TestVerticle;
 
 import static org.vertx.testtools.VertxAssert.*;
@@ -65,19 +67,25 @@ public class ModuleIntegrationTest extends TestVerticle {
   public void start() {
     // Make sure we call initialize() - this sets up the assert stuff so assert functionality works correctly
     initialize();
+
+    // test configuration
+    JsonObject config = new JsonObject().putArray("services", new JsonArray()
+            .add("com.deblox.myproject.PingVerticle"));
+
+
     // Deploy the module - the System property `vertx.modulename` will contain the name of the module so you
     // don't have to hardecode it in your tests
-    container.deployModule(System.getProperty("vertx.modulename"), new AsyncResultHandler<String>() {
+    container.deployModule(System.getProperty("vertx.modulename"), config, new AsyncResultHandler<String>() {
       @Override
       public void handle(AsyncResult<String> asyncResult) {
-      // Deployment is asynchronous and this this handler will be called when it's complete (or failed)
-      if (asyncResult.failed()) {
-        container.logger().error(asyncResult.cause());
-      }
-      assertTrue(asyncResult.succeeded());
-      assertNotNull("deploymentID should not be null", asyncResult.result());
-      // If deployed correctly then start the tests!
-      startTests();
+        // Deployment is asynchronous and this this handler will be called when it's complete (or failed)
+        if (asyncResult.failed()) {
+          container.logger().error(asyncResult.cause());
+        }
+        assertTrue(asyncResult.succeeded());
+        assertNotNull("deploymentID should not be null", asyncResult.result());
+        // If deployed correctly then start the tests!
+        startTests();
       }
     });
   }
