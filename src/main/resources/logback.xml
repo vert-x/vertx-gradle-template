@@ -3,17 +3,17 @@
         <!-- encoders are assigned the type
              ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
         <encoder>
-            <pattern>%-4relative [%thread] %highlight(%-5level) %cyan(%logger{35}) - %msg %n</pattern>
+            <pattern>%-4relative %highlight(%-5level) %cyan(%class{23}:%line) - %msg %n</pattern>
         </encoder>
     </appender>
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>server.log</file>
-        <append>false</append>
+        <append>true</append>
         <!--<withJansi>true</withJansi>-->
         <!-- encoders are assigned the type
              ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
         <encoder>
-            <pattern>%-4r %-5level %logger{35}: %msg%n</pattern>
+            <pattern>%date %-5level %class{23}:%line - %msg%n</pattern>
         </encoder>
     </appender>
     <root level="INFO">
