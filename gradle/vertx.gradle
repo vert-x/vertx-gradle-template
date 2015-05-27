@@ -1,6 +1,5 @@
 import org.vertx.java.platform.impl.cli.Starter
 
-
 /*
  * Copyright 2012 the original author or authors.
  *
@@ -19,7 +18,8 @@ import org.vertx.java.platform.impl.cli.Starter
 
 apply plugin: 'java'
 apply plugin: 'groovy'
-apply plugin: 'idea'
+//apply plugin: 'scala'
+//apply plugin: 'idea'
 //apply plugin: 'eclipse'
 
 def cpSeparator = System.getProperty("path.separator")
@@ -36,14 +36,12 @@ archivesBaseName = modname
 
 defaultTasks = ['assemble']
 
-sourceCompatibility = '1.7'
-targetCompatibility = '1.7'
-
 project.ext.moduleName = "$modowner~$modname~$version"
 
 configurations {
   provided
   testCompile.extendsFrom provided
+  logback
 }
 
 repositories {
@@ -60,6 +58,7 @@ repositories {
 dependencies {
   provided "io.vertx:vertx-core:$vertxVersion"
   provided "io.vertx:vertx-platform:$vertxVersion"
+  provided "io.vertx:vertx-hazelcast:$vertxVersion"
   testCompile "junit:junit:$junitVersion"
   testCompile "io.vertx:testtools:$toolsVersion"
 }
@@ -79,7 +78,6 @@ buildscript {
   }
 
   dependencies {
-    classpath "ch.qos.logback:logback-classic:$logbackVersion"
     classpath "io.vertx:vertx-core:$vertxVersion"
     classpath "io.vertx:vertx-platform:$vertxVersion"
     classpath "io.vertx:vertx-hazelcast:$vertxVersion"
@@ -97,16 +95,23 @@ buildscript {
 
 sourceSets {
   main {
-    compileClasspath = compileClasspath + configurations.provided
+    compileClasspath = compileClasspath + configurations.provided + configurations.logback
+    runtimeClasspath = runtimeClasspath + configurations.logback
+  }
+  test {
+    runtimeClasspath = runtimeClasspath + configurations.logback
   }
 }
 
 task copyMod( type:Copy, dependsOn: 'classes', description: 'Assemble the module into the local mods directory' ) {
   into "build/mods/$moduleName"
+//  from compileGroovy
   from compileJava
+//  from compileScala
   from 'src/main/resources'
   into( 'lib' ) {
     from configurations.compile
+      from configurations.logback
   }
 }
 
@@ -126,7 +131,7 @@ task sourceJar(type: Jar) {
 }
 
 javadoc {
-    classpath = configurations.compile + configurations.provided
+  classpath = configurations.compile + configurations.provided
 }
 
 task javadocJar(type: Jar) {
@@ -144,20 +149,18 @@ artifacts {
 
 
 test {
-  dependsOn copyMod
+    dependsOn copyMod
 
-//  useTestNG()
+    // Make sure tests are always run!
+    outputs.upToDateWhen { false }
 
-  // Make sure tests are always run!
-  outputs.upToDateWhen { false }
+    // Show output
+    testLogging.showStandardStreams = true
 
-  // Show output
-  testLogging.showStandardStreams = true
+    testLogging { exceptionFormat "full" }
 
-  testLogging { exceptionFormat "full" }
-
-  systemProperty 'vertx.mods', "build/mods"
-  systemProperty 'org.vertx.logger-delegate-factory-class-name', "org.vertx.java.core.logging.impl.SLF4JLogDelegateFactory"
+    systemProperty 'vertx.mods', "build/mods"
+    systemProperty 'org.vertx.logger-delegate-factory-class-name', "org.vertx.java.core.logging.impl.SLF4JLogDelegateFactory"
 }
 
 task init(description: 'Create module link and CP file') << {
@@ -169,20 +172,17 @@ task collectDeps(type: Copy) {
   destinationDir = file("build")
   into("deps") {
     from configurations.compile
+    from configurations.logback
   }
 }
 
-task runMod(description: 'Run the module', dependsOn: collectDeps) << {
-  setSysProps()
-  // We also init here - this means for single module builds the user doesn't have to explicitly init -
-  // they can just do runMod
-
-  doInit()
-  args = ['runmod', moduleName]
-
-  def args2 = runModArgs.split("\\s+")
-  args.addAll(args2)
-  Starter.main(args as String[])
+task runMod(description: 'Run the module', dependsOn: [collectDeps, classes, init]) << {
+    setSysProps()
+//    doInit()
+    def args = ['runmod', moduleName]
+    def args2 = runModArgs.split("\\s+")
+    args.addAll(args2)
+    Starter.main(args as String[])
 }
 
 def doInit() {
@@ -190,14 +190,16 @@ def doInit() {
   if (!cpFile.exists()) {
     cpFile.createNewFile();
     String defaultCp =
-      "src/main/resources\r\n" +
-      "bin\r\n" +
-      "out/production/${project.name}\r\n" +
-      "out/test/${project.name}\r\n" +
-      "build/deps\r\n";
+            "src/main/resources\r\n" +
+                    "bin\r\n" +
+                    "out/production/${project.name}\r\n" +
+                    "out/test/${project.name}\r\n" +
+                    "build/deps\r\n" +
+                    "build/classes/main\r\n" +
+                    "build/resources/main\r\n";
+
     cpFile << defaultCp;
   }
-//  systemProperty 'org.vertx.logger-delegate-factory-class-name', "org.vertx.java.core.logging.impl.SLF4JLogDelegateFactory"
   def args = ['create-module-link', moduleName]
   Starter.main(args as String[])
 }
@@ -219,15 +221,14 @@ task fatJar(dependsOn: modZip, description: 'Creates a fat executable jar which 
 }
 
 def setSysProps() {
-//    System.setProperty("-cp", "./build/deps/slf4j-api-1.7.6.jar")
-    System.setProperty("vertx.clusterManagerFactory", "org.vertx.java.spi.cluster.impl.hazelcast.HazelcastClusterManagerFactory")
-    System.setProperty("org.vertx.logger-delegate-factory-class-name", "org.vertx.java.core.logging.impl.SLF4JLogDelegateFactory")
-    System.setProperty('logback.configurationFile', '/logback.xml')
-    String modsDir = System.getenv("VERTX_MODS")
+  System.setProperty("vertx.clusterManagerFactory", "org.vertx.java.spi.cluster.impl.hazelcast.HazelcastClusterManagerFactory")
+  System.setProperty("org.vertx.logger-delegate-factory-class-name", "org.vertx.java.core.logging.impl.SLF4JLogDelegateFactory")
+  System.setProperty('logback.configurationFile', '/logback.xml')
+  String modsDir = System.getenv("VERTX_MODS")
   if (modsDir == null) {
     modsDir = "build/mods";
   }
-    System.setProperty("vertx.mods", modsDir)
+  System.setProperty("vertx.mods", modsDir)
 }
 
 def loadProperties(String sourceFileName) {
@@ -245,10 +246,10 @@ def loadProperties(String sourceFileName) {
 plugins.withType(IdeaPlugin) {
   idea {
     module {
-      scopes.PROVIDED.plus += configurations.provided
-      scopes.COMPILE.minus += configurations.provided
-      scopes.TEST.minus += configurations.provided
-      scopes.RUNTIME.minus += configurations.provided
+      scopes.PROVIDED.plus += [configurations.provided]
+      scopes.COMPILE.minus += [configurations.provided]
+      scopes.TEST.minus += [configurations.provided]
+      scopes.RUNTIME.minus += [configurations.provided]
     }
   }
 }

@@ -43,18 +43,23 @@ install - install any jars produced to the local Maven repository (.m2)
  */
 
 dependencies {
-  /*
-  Add your module jar dependencies here
-  E.g.
-  compile "com.foo:foo-lib:1.0.1" - for compile time deps - this will end up in your module too!
-  testCompile "com.foo:foo-lib:1.0.1" - for test time deps
-  provided "com.foo:foo-lib:1.0.1" - if you DON'T want it to be packaged in the module zip
-  */
+    /*
+    Add your module jar dependencies here
+    E.g.
+    compile "com.foo:foo-lib:1.0.1" - for compile time deps - this will end up in your module too!
+    testCompile "com.foo:foo-lib:1.0.1" - for test time deps
+    provided "com.foo:foo-lib:1.0.1" - if you DON'T want it to be packaged in the module zip
+    */
+
+    // If you're creating Groovy compiled verticles you may need the following dependencies
     provided "org.codehaus.groovy:groovy-all:$groovyVersion"
     provided "io.vertx:lang-groovy:$groovyLangModVersion@jar"
-//    compile "ch.qos.logback:logback-classic:$logbackVersion"
-    compile "org.slf4j:slf4j-simple:1.7.7"
-//    compile "org.slf4j:slf4j-log4j12:1.7.7"
+    logback "ch.qos.logback:logback-classic:$logbackVersion"
+
+    // If you're creating Scala compiled verticles you may need the following dependencies
+    provided "org.scala-lang:scala-library:$scalaVersion"
+    provided "io.vertx:lang-scala:$scalaLangModVersion@jar"
+
 }
 
 test {
@@ -70,6 +75,21 @@ test {
 //run {
 //    systemProperty 'org.vertx.logger-delegate-factory-class-name', "org.vertx.java.core.logging.impl.SLF4JLogDelegateFactory"
 //}
+
+task copyLogbackLibs(type: Copy, dependsOn: fatJar) {
+    mkdir("build/libs/logback/lib")
+    destinationDir = file("build/libs/logback")
+    into ('lib') {
+        from configurations.logback
+    }
+}
+
+task dist(dependsOn: copyLogbackLibs) << {
+    ant.jar(update: 'true', destfile: "build/libs/${modname}-${version}-fat.jar") {
+        fileset(dir: 'build/libs/logback', includes: '**')
+    }
+}
+
 
 /*
 If you're uploading stuff to Maven, Gradle needs to generate a POM.

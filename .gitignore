@@ -20,3 +20,5 @@ test-results
 test-tmp
 *.class
 mods
+vertx_classpath.txt
+*.log
