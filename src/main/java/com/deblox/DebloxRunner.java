@@ -1,7 +1,9 @@
 package com.deblox;
 
-import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
+import io.vertx.core.*;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.impl.LoggerFactory;
 
 import java.io.File;
 import java.util.function.Consumer;
@@ -11,39 +13,44 @@ import java.util.function.Consumer;
  */
 public class DebloxRunner {
 
+  private static final Logger logger = LoggerFactory.getLogger(DebloxRunner.class);
 
-  public static void runJavaExample(String prefix, Class clazz, boolean clustered) {
-    runJavaExample(prefix, clazz, new VertxOptions().setClustered(clustered));
+  public static void runJava(String prefix, Class clazz, boolean clustered) {
+    runJava(prefix, clazz, new VertxOptions().setClustered(clustered));
   }
 
-  public static void runJavaExample(String prefix, Class clazz, VertxOptions options) {
-    String exampleDir = prefix + clazz.getPackage().getName().replace(".", "/");
-    runExample(exampleDir, clazz.getName(), options);
+  public static void runJava(String prefix, Class clazz, VertxOptions options) {
+    String runDir = prefix + clazz.getPackage().getName().replace(".", "/");
+    run(runDir, clazz.getName(), options);
   }
 
-  public static void runScriptExample(String prefix, String scriptName, boolean clustered) {
+  public static void runScript(String prefix, String scriptName, boolean clustered) {
     File file = new File(scriptName);
     String dirPart = file.getParent();
     String scriptDir = prefix + dirPart;
-    DebloxRunner.runExample(scriptDir, scriptDir + "/" + file.getName(), clustered);
+    DebloxRunner.run(scriptDir, scriptDir + "/" + file.getName(), clustered);
   }
 
-  public static void runScriptExample(String prefix, String scriptName, VertxOptions options) {
+  public static void runScript(String prefix, String scriptName, VertxOptions options) {
     File file = new File(scriptName);
     String dirPart = file.getParent();
     String scriptDir = prefix + dirPart;
-    DebloxRunner.runExample(scriptDir, scriptDir + "/" + file.getName(), options);
+    DebloxRunner.run(scriptDir, scriptDir + "/" + file.getName(), options);
   }
 
-  public static void runExample(String exampleDir, String verticleID, boolean clustered) {
-    runExample(exampleDir, verticleID, new VertxOptions().setClustered(clustered));
+  public static void run(String runDir, String verticleID, boolean clustered) {
+    run(runDir, verticleID, new VertxOptions().setClustered(clustered));
   }
 
-  public static void runExample(String exampleDir, String verticleID, VertxOptions options) {
-    System.setProperty("vertx.cwd", exampleDir);
+  public static void run(String runDir, String verticleID, VertxOptions options) {
+    logger.info("booting");
+    System.setProperty("vertx.cwd", runDir);
     Consumer<Vertx> runner = vertx -> {
       try {
-        vertx.deployVerticle(verticleID);
+        JsonObject config = Util.loadConfig("/conf.json");
+        // put config inside a config tag
+        DeploymentOptions deploymentOptions = new DeploymentOptions(config);
+        vertx.deployVerticle(verticleID, deploymentOptions);
       } catch (Throwable t) {
         t.printStackTrace();
       }

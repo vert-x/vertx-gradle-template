@@ -27,43 +27,43 @@ public class Runner {
   private static final String UNIT_EXAMPLES_JS_DIR = UNIT_EXAMPLES_DIR + "/src/main/js/";
   private static final String UNIT_EXAMPLES_GROOVY_DIR = UNIT_EXAMPLES_DIR + "/src/main/groovy/";
 
-  public static void runClusteredExample(Class clazz) {
-    DebloxRunner.runJavaExample(UNIT_EXAMPLES_JAVA_DIR, clazz, true);
+  public static void runClustered(Class clazz) {
+    DebloxRunner.runJava(UNIT_EXAMPLES_JAVA_DIR, clazz, true);
   }
 
-  public static void runExample(Class clazz) {
-    DebloxRunner.runJavaExample(UNIT_EXAMPLES_JAVA_DIR, clazz, false);
+  public static void run(Class clazz) {
+    DebloxRunner.runJava(UNIT_EXAMPLES_JAVA_DIR, clazz, false);
   }
 
   // JavaScript examples
 
-  public static void runJSExample(String scriptName) {
-    DebloxRunner.runScriptExample(UNIT_EXAMPLES_JS_DIR, scriptName, false);
+  public static void runJS(String scriptName) {
+    DebloxRunner.runScript(UNIT_EXAMPLES_JS_DIR, scriptName, false);
   }
 
   public static void runJSExampleClustered(String scriptName) {
-    DebloxRunner.runScriptExample(UNIT_EXAMPLES_JS_DIR, scriptName, true);
+    DebloxRunner.runScript(UNIT_EXAMPLES_JS_DIR, scriptName, true);
   }
 
   static class JSVertxUnitTest {
     public static void main(String[] args) {
-      Runner.runJSExample("io/vertx/example/unit/test/vertxunittest.js");
+      Runner.runJS("io/vertx/example/unit/test/vertxunittest.js");
     }
   }
 
   // Groovy examples
 
-  public static void runGroovyExample(String scriptName) {
-    DebloxRunner.runScriptExample(UNIT_EXAMPLES_GROOVY_DIR, scriptName, false);
+  public static void runGroovy(String scriptName) {
+    DebloxRunner.runScript(UNIT_EXAMPLES_GROOVY_DIR, scriptName, false);
   }
 
   public static void runGroovyExampleClustered(String scriptName) {
-    DebloxRunner.runScriptExample(UNIT_EXAMPLES_GROOVY_DIR, scriptName, true);
+    DebloxRunner.runScript(UNIT_EXAMPLES_GROOVY_DIR, scriptName, true);
   }
 
   static class GroovyVertxUnitTest {
     public static void main(String[] args) {
-      Runner.runGroovyExample("io/vertx/example/unit/test/vertxunittest.groovy");
+      Runner.runGroovy("io/vertx/example/unit/test/vertxunittest.groovy");
     }
   }
 }

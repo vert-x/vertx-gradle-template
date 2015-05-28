@@ -56,7 +56,7 @@ public class PingVerticleTest {
     vertx.close( event -> {
       async.complete();
     });
-    
+
   }
 
   @Test
