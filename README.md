@@ -1,12 +1,28 @@
-# Vert.x Gradle Template
+# deBlox Vert.x template
 
-Template project for creating a Vert.x module with a Gradle build.
+Modified version of [vertx-gradle-template](https://github.com/vert-x/vertx-gradle-template). 
 
-Clone this and adapt it to easily develop Vert.x modules using Gradle as your build tool.
+## features
 
-By default this module contains a simple Java verticle which listens on the event bus and responds to `ping!`
-messages with `pong!`.
+* Vert.x 3
+* Boot Class
+* Logback
 
-This template also shows you how to write tests in Java, Groovy, Ruby and Python
+## building
 
-See the [build script](build.gradle) for the list of useful tasks
+The gradle task *shadowJar* will build a executable jar
+
+```
+./gradlew shadowJar
+```
+
+## running
+
+When running as a fatJar, remember to specify the alternate logging implementation.
+
+
+```
+JAVA_OPTS="-Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.impl.SLF4JLogDelegateFactory"
+java $JAVA_OPTS -jar my-module-1.0.0-final-fat.jar -cp /dir/with/logback/xml
+```
+
