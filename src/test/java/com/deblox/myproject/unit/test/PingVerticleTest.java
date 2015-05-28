@@ -49,9 +49,14 @@ public class PingVerticleTest {
   public void after(TestContext context) {
     logger.info("@After");
     Async async = context.async();
+
+    // the correct way after next release
+    //vertx.close(context.assertAsyncSuccess());
+
     vertx.close( event -> {
       async.complete();
     });
+    
   }
 
   @Test

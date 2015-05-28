@@ -23,9 +23,6 @@ When running as a fatJar, remember to specify the alternate logging implementati
 
 ```
 
-# vertx 2
-JAVA_OPTS="-Dorg.vertx.logger-delegate-factory-class-name=org.vertx.java.core.logging.impl.SLF4JLogDelegateFactory"
-# vertx 3
 JAVA_OPTS="-Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.impl.SLF4JLogDelegateFactory"
 
 java $JAVA_OPTS -jar my-module-1.0.0-final-fat.jar -cp /dir/with/logback/xml
