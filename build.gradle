@@ -27,6 +27,10 @@ dependencies {
     testCompile "io.vertx:vertx-unit:$vertxVersion"
 }
 
+test {
+    systemProperty 'vertx.logger-delegate-factory-class-name', "io.vertx.core.logging.impl.SLF4JLogDelegateFactory"
+}
+
 shadowJar {
     classifier = 'fat'
     manifest {

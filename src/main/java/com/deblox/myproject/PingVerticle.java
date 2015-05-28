@@ -20,6 +20,7 @@ package com.deblox.myproject;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.Future;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.impl.LoggerFactory;
 
@@ -32,18 +33,23 @@ public class PingVerticle extends AbstractVerticle {
 
   private static final Logger logger = LoggerFactory.getLogger(PingVerticle.class);
 
-  public void start() {
+  public void start(Future<Void> startFuture) throws Exception {
+    logger.info("starting");
     logger.info("config: " + config().toString());
 
     EventBus eb = vertx.eventBus();
 
     eb.consumer("ping-address", message -> {
-      logger.info("Sending back pong");
+      logger.info("sending back pong");
       message.reply("pong!");
-      logger.info("Sent");
+      logger.info("sent");
     });
 
-    logger.info("PingVerticle started");
+    // wait 2 seconds before completing startup
+    vertx.setTimer(2000, tid -> {
+      logger.info("startup complete");
+      startFuture.complete();
+    });
 
   }
 }

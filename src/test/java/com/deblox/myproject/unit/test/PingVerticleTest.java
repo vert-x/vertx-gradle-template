@@ -56,7 +56,7 @@ public class PingVerticleTest {
   public void after(TestContext context) {
     logger.info("@After");
     Async async = context.async();
-    vertx.close();
+    vertx.close(async);
   }
 
   @Test
