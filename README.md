@@ -1,22 +1,23 @@
-# deBlox vert.x template
+# deBlox Vert.x template
 
 Modified version of [vertx-gradle-template](https://github.com/vert-x/vertx-gradle-template). 
 
 ## features
 
+* Vert.x 3
 * Boot Class
 * Logback
 
 ## building
 
-Task *dist* will build a fatJar and roll in the logback libs.
+Task *shadowJar* will build a executable jar
 
 ```
-./gradlew dist
+./gradlew shadowJar
 
 ```
 
-## Running
+## running
 
 When running as a fatJar, remember to specify the alternate logging implementation.
 
