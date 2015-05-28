@@ -3,7 +3,7 @@
         <!-- encoders are assigned the type
              ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
         <encoder>
-            <pattern>%-4relative %highlight(%-5level) %cyan(%class{23}:%line) - %msg %n</pattern>
+            <pattern>%-4relative %highlight(%-5level) %cyan(%class{64}:%line) - %msg %n</pattern>
         </encoder>
     </appender>
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
@@ -13,7 +13,7 @@
         <!-- encoders are assigned the type
              ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
         <encoder>
-            <pattern>%date %-5level %class{23}:%line - %msg%n</pattern>
+            <pattern>%date %-5level %class{64}:%line - %msg%n</pattern>
         </encoder>
     </appender>
     <root level="INFO">

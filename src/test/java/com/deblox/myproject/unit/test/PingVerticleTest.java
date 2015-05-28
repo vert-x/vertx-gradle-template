@@ -38,14 +38,7 @@ public class PingVerticleTest {
     Async async = context.async();
     vertx.deployVerticle(PingVerticle.class.getName(), res -> {
       if (res.succeeded()) {
-        String deploymentID = res.result();
-        vertx.undeploy(deploymentID, res2 -> {
-          if (res2.succeeded()) {
-            async.complete();
-          } else {
-            context.fail();
-          }
-        });
+        async.complete();
       } else {
         context.fail();
       }
@@ -56,20 +49,21 @@ public class PingVerticleTest {
   public void after(TestContext context) {
     logger.info("@After");
     Async async = context.async();
-    vertx.close(async);
+    vertx.close( event -> {
+      async.complete();
+    });
   }
 
   @Test
   public void test(TestContext test) {
     Async async = test.async();
-    logger.info("sending ping");
     eb.send("ping-address", "ping!", reply -> {
       if (reply.succeeded()) {
         async.complete();
       } else {
-        logger.error(reply.cause().getMessage());
         test.fail();
       }
     });
+
   }
 }
