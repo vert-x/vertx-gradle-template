@@ -1,7 +1,8 @@
 package com.deblox;
 
-
-import io.vertx.core.*;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -16,7 +17,8 @@ import io.vertx.core.logging.impl.LoggerFactory;
  */
 public class Boot extends AbstractVerticle {
 
-  DeploymentOptions config;
+  JsonObject config;
+
   private static final Logger logger = LoggerFactory.getLogger(Boot.class);
 
   @Override
@@ -32,18 +34,20 @@ public class Boot extends AbstractVerticle {
             "████████▀    ██████████ ▄█████████▀  █████▄▄██  ▀██████▀  ████       ███▄      ▄█████████▀   ▀██████▀   ▀██████▀     ▄████▀   1.0\n" +
             "                                     ▀                                                                                        ");
 
-    // get the conf.json file
-//        config = this.getContainer().config();
-    config = new DeploymentOptions();
-
+    config = config();
     logger.info("config: " + config.toString());
 
     // Start each class mentioned in services
-    for (final Object service : config.getConfig().getJsonArray("services", new JsonArray())) {
+    for (final Object service : config.getJsonArray("services", new JsonArray())) {
       logger.info("deploying service: " + service);
 
-      DeploymentOptions serviceConfig = new DeploymentOptions(config.getConfig().getJsonObject(service.toString(), new JsonObject()));
-      logger.info("service's config: " + serviceConfig);
+      // get the config for the named service
+      JsonObject serviceConfigJson = config.getJsonObject(service.toString(), new JsonObject());
+      logger.info("serviceConfigJson: " + serviceConfigJson);
+
+      // See DeploymentOptions.fromJson for all the possible configurables
+      DeploymentOptions serviceConfig = new DeploymentOptions(serviceConfigJson);
+      logger.info("service's config: " + serviceConfig.toJson().toString());
 
       vertx.deployVerticle(service.toString(), serviceConfig, res -> {
 

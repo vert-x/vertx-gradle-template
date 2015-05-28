@@ -1,8 +1,19 @@
-// Example JSON config file
-
+// config options per service are as per: DeployOptions.java
 {
   "services": ["com.deblox.myproject.PingVerticle"],
-  "com.deblox.PingVerticle": {
-    "config_item": "something"
+  "com.deblox.myproject.PingVerticle": {
+    "config": {
+      "foo": "bar",
+      "baz": {}
+    },
+    "worker": false,
+    "multiThreaded": false,
+    "isolationGroup": null,
+    "ha": false,
+    "extraClasspath": null,
+    "instances": 1,
+    "redeploy": true,
+    "redeployScanPeriod": 250,
+    "redeployGracePeriod": 1000
   }
 }

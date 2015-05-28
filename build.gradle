@@ -1,131 +1,43 @@
-apply from: "gradle/vertx.gradle"
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '1.2.1'
+    id 'idea'
+}
 
-/*
-Usage:
+version = '3.0.0-SNAPSHOT'
 
-./gradlew task_name
+if (!JavaVersion.current().java8Compatible) {
+    throw new IllegalStateException('''A Haiku:
+                                      |  This needs Java 8,
+                                      |  You are using something else,
+                                      |  Refresh. Try again.'''.stripMargin())
+}
 
-(or gradlew.bat task_name if you have the misfortune to have to use Windows)
-
-If no task name is specified then the default task 'assemble' is run
-
-Task names are:
-
-idea - generate a skeleton IntelliJ IDEA project
-
-eclipse - generate a skeleton Eclipse IDE project
-
-assemble - builds the outputs, by default this is the module zip file. It can also include a jar file if produceJar
-          in gradle.properties is set to true. Outputs are created in build/libs.
-          if pullInDeps in gradle.properties is set to 'true' then the modules dependencies will be
-          automatically pulled into a nested mods directory inside the module during the build
-
-copyMod - builds and copies the module to the local 'mods' directory so you can execute vertx runmod (etc)
-          directly from the command line
-
-modZip - creates the module zip into build/libs
-
-clean - cleans everything up
-
-test - runs the tests. An nice html test report is created in build/reports/tests (index.html)
-
-runMod - runs the module. This is similar to executing vertx runmod from the command line except that it does
-         not use the version of Vert.x installed and on the PATH to run it. Instead it uses the version of Vert.x
-         that the module was compiled and tested against.
-
-pullInDeps - pulls in all dependencies of the module into a nested module directory
-
-uploadArchives - upload the module zip file (and jar if one has been created) to Nexus. You will need to
-                 configure sonatypeUsername and sonatypePassword in ~/.gradle/gradle.properties.
-
-install - install any jars produced to the local Maven repository (.m2)
-
- */
+repositories {
+    mavenCentral()
+    maven {
+        url = 'http://oss.sonatype.org/content/repositories/snapshots/'
+    }
+}
 
 dependencies {
-    /*
-    Add your module jar dependencies here
-    E.g.
-    compile "com.foo:foo-lib:1.0.1" - for compile time deps - this will end up in your module too!
-    testCompile "com.foo:foo-lib:1.0.1" - for test time deps
-    provided "com.foo:foo-lib:1.0.1" - if you DON'T want it to be packaged in the module zip
-    */
-
-    // If you're creating Groovy compiled verticles you may need the following dependencies
-    provided "org.codehaus.groovy:groovy-all:$groovyVersion"
-    provided "io.vertx:lang-groovy:$groovyLangModVersion@jar"
-    logback "ch.qos.logback:logback-classic:$logbackVersion"
-
-    // If you're creating Scala compiled verticles you may need the following dependencies
-    provided "org.scala-lang:scala-library:$scalaVersion"
-    provided "io.vertx:lang-scala:$scalaLangModVersion@jar"
-
+    compile "io.vertx:vertx-core:$vertxVersion"
+    compile "ch.qos.logback:logback-classic:$logbackVersion"
+    testCompile "junit:junit:$junitVersion"
+    testCompile "io.vertx:vertx-unit:$vertxVersion"
 }
 
-test {
-
-//    useTestNG()
-  /* Configure which tests are included
-  include 'org/foo/**'
-  exclude 'org/boo/**'
-  */
-
-}
-
-//run {
-//    systemProperty 'org.vertx.logger-delegate-factory-class-name', "org.vertx.java.core.logging.impl.SLF4JLogDelegateFactory"
-//}
-
-task copyLogbackLibs(type: Copy, dependsOn: fatJar) {
-    mkdir("build/libs/logback/lib")
-    destinationDir = file("build/libs/logback")
-    into ('lib') {
-        from configurations.logback
+shadowJar {
+    classifier = 'fat'
+    manifest {
+        attributes 'Main-Class': 'io.vertx.core.Starter'
+        attributes 'Main-Verticle': 'com.deblox.Boot'
+    }
+    mergeServiceFiles {
+        include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
     }
 }
 
-task dist(dependsOn: copyLogbackLibs) << {
-    ant.jar(update: 'true', destfile: "build/libs/${modname}-${version}-fat.jar") {
-        fileset(dir: 'build/libs/logback', includes: '**')
-    }
-}
-
-
-/*
-If you're uploading stuff to Maven, Gradle needs to generate a POM.
-Please edit the details below.
- */
-def configurePom(def pom) {
-  pom.project {
-    name rootProject.name
-    description 'Description of your module here'
-    inceptionYear '2013'
-    packaging 'jar'
-
-    url 'Your project url'
-
-    developers {
-      developer {
-        id 'developer id (e.g. github username)'
-        name 'developer name'
-        email 'developer email'
-      }
-    }
-
-    scm {
-      url 'url to your repo - e.g. github repo url'
-    }
-
-    licenses {
-      license {
-        name 'The name of the license used, e.g.: The Apache Software License, Version 2.0'
-        url 'URl to the license, e.g.: http://www.apache.org/licenses/LICENSE-2.0.txt'
-        distribution 'repo'
-      }
-    }
-
-    properties {
-      setProperty('project.build.sourceEncoding', 'UTF8')
-    }
-  }
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2.1'
 }

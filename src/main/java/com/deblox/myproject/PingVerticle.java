@@ -18,10 +18,8 @@
 package com.deblox.myproject;
 
 
-import io.vertx.core.*;
-import io.vertx.core.eventbus.Message;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.impl.LoggerFactory;
 
@@ -35,12 +33,15 @@ public class PingVerticle extends AbstractVerticle {
   private static final Logger logger = LoggerFactory.getLogger(PingVerticle.class);
 
   public void start() {
+    logger.info("config: " + config().toString());
 
-    vertx.eventBus().consumer("ping-address", message -> {
-      logger.info("Sent back pong");
+    EventBus eb = vertx.eventBus();
+
+    eb.consumer("ping-address", message -> {
+      logger.info("Sending back pong");
       message.reply("pong!");
+      logger.info("Sent");
     });
-
 
     logger.info("PingVerticle started");
 

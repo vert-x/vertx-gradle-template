@@ -1,6 +1,6 @@
-package com.deblox.myproject.test.integration.java;/*
+package com.deblox.myproject.unit.test;
 
-import io.vertx.codetrans.annotations.CodeTranslate;
+//import io.vertx.codetrans.annotations.CodeTranslate;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpServer;
@@ -14,10 +14,7 @@ import io.vertx.ext.unit.report.ReportOptions;
  *
  * @author <a href="http://tfox.org">Tim Fox</a>
  */
-
-import io.vertx.core.Vertx;
-
-public class BasicIntegrationTest {
+public class VertxUnitTest {
 
 
   public static void main(String[] args) {
@@ -26,11 +23,11 @@ public class BasicIntegrationTest {
 
   Vertx vertx;
 
-  @CodeTranslate // Not yet detected
+//  @CodeTranslate // Not yet detected
   public void run() {
 
     TestOptions options = new TestOptions().addReporter(new ReportOptions().setTo("console"));
-    TestSuite suite = TestSuite.create("io.vertx.example.unit.test.VertxUnitTest");
+    TestSuite suite = TestSuite.create("com.deblox.myproject.unit.VertxUnitTest");
 
     suite.before(context -> {
       vertx = Vertx.vertx();
@@ -70,7 +67,7 @@ public class BasicIntegrationTest {
     suite.test("some_test2", context -> {
       // Deploy and undeploy a verticle
       Async async = context.async();
-      vertx.deployVerticle("io.vertx.example.unit.SomeVerticle", res -> {
+      vertx.deployVerticle("com.deblox.myproject.PingVerticle", res -> {
         if (res.succeeded()) {
           String deploymentID = res.result();
           vertx.undeploy(deploymentID, res2 -> {
