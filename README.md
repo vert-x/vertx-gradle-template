@@ -10,3 +10,6 @@ messages with `pong!`.
 This template also shows you how to write tests in Java, Groovy, Ruby and Python
 
 See the [build script](build.gradle) for the list of useful tasks
+
+---
+See [Vert.x gradle based developer guide](http://vertx.io/gradle_dev.html) on how to use this template.
