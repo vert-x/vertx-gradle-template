@@ -1,4 +1,6 @@
-# Vert.x Gradle Template
+# Vert.x 2.x is **deprecated** - use instead https://github.com/vert-x3/vertx-gradle-starter
+
+## Vert.x Gradle Template
 
 Template project for creating a Vert.x module with a Gradle build.
 
